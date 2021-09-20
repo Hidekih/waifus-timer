@@ -17,11 +17,10 @@ let mudaeClaimResetTimer
 
 function rollsResetInterval() {
   return setInterval(() => {
-    if (new Date().getMinutes() === 39 && new Date().getSeconds() < 1) {
+    if (new Date().getMinutes() === 22 && new Date().getSeconds() < 1) {
       new Notification('Waifus Timer', {
         body: 'Your rolls are reseted right now!'
       })
-      console.log('Bipou')
     }
   }, 1000)
 }
@@ -41,6 +40,16 @@ function claimsResetInterval() {
   }, 1000)
 }
 
+if (JSON.parse(localStorage.getItem('@WaifusTimer:rolls'))) {
+  rollsSwitchEl.firstElementChild.classList.add('activated')
+  mudaeRollsResetTimer = rollsResetInterval()
+}
+
+if (JSON.parse(localStorage.getItem('@WaifusTimer:claims'))) {
+  claimsSwitchEl.firstElementChild.classList.add('activated')
+  mudaeClaimResetTimer = claimsResetInterval()
+}
+
 rollsSwitchEl.addEventListener('click', () => {
   rollsSwitchEl.firstElementChild.classList.toggle('activated')
 
@@ -48,10 +57,9 @@ rollsSwitchEl.addEventListener('click', () => {
     mudaeRollsResetTimer = rollsResetInterval()
 
     localStorage.setItem('@WaifusTimer:rolls', true)
-    console.log('Ligar')
   } else {
     clearInterval(mudaeRollsResetTimer)
-    console.log('Desligar')
+
     localStorage.setItem('@WaifusTimer:rolls', false)
   }
 })
@@ -63,24 +71,18 @@ claimsSwitchEl.addEventListener('click', () => {
     mudaeClaimResetTimer = claimsResetInterval()
 
     localStorage.setItem('@WaifusTimer:claims', true)
-    console.log('Ligar')
   } else {
     clearInterval(mudaeClaimResetTimer)
-    console.log('Desligar')
+
     localStorage.setItem('@WaifusTimer:claims', false)
   }
 })
 
-if (JSON.parse(localStorage.getItem('@WaifusTimer:rolls'))) {
-  rollsSwitchEl.firstElementChild.classList.add('activated')
-  mudaeRollsResetTimer = rollsResetInterval()
-}
-
-if (JSON.parse(localStorage.getItem('@WaifusTimer:claims'))) {
-  claimsSwitchEl.firstElementChild.classList.add('activated')
-  mudaeClaimResetTimer = claimsResetInterval()
-}
-
 window.onload = () => {
   Notification.requestPermission()
+}
+
+window.onclose = () => {
+  rollsSwitchEl.removeEventListener('click')
+  claimsSwitchEl.removeEventListener('click')
 }
