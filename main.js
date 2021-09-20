@@ -17,7 +17,7 @@ let mudaeClaimResetTimer
 
 function rollsResetInterval() {
   return setInterval(() => {
-    if (new Date().getMinutes() === 22 && new Date().getSeconds() < 1) {
+    if (new Date().getMinutes() === 39 && new Date().getSeconds() < 1) {
       new Notification('Waifus Timer', {
         body: 'Your rolls are reseted right now!'
       })
