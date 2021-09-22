@@ -1,6 +1,4 @@
-const rollsSwitchEl = document.querySelector('#rolls-switch')
-const claimsSwitchEl = document.querySelector('#claims-switch')
-
+const KEY_MINUTE = 47
 const resetClaim = [
   { hours: 0, minutes: 39 },
   { hours: 3, minutes: 39 },
@@ -12,12 +10,32 @@ const resetClaim = [
   { hours: 21, minutes: 39 }
 ]
 
-let mudaeRollsResetTimer
-let mudaeClaimResetTimer
+const rollsSwitchEl = document.querySelector('#rolls-switch')
+const claimsSwitchEl = document.querySelector('#claims-switch')
+const pokemonSwitchEl = document.querySelector('#pokemon-switch')
+
+const rollsNotificator = {
+  isActive: JSON.parse(localStorage.getItem('@WaifusTimer:rolls')),
+  timer: undefined
+}
+
+const claimsNotificator = {
+  isActive: JSON.parse(localStorage.getItem('@WaifusTimer:claims')),
+  timer: undefined
+}
+
+const pokemonNotificator = {
+  isActive: JSON.parse(localStorage.getItem('@WaifusTimer:pokemon')),
+  timer: undefined
+}
 
 function rollsResetInterval() {
   return setInterval(() => {
-    if (new Date().getMinutes() === 22 && new Date().getSeconds() < 1) {
+    const currentMinutes = new Date().getMinutes()
+    const currentSeconds = new Date().getSeconds()
+
+    if (currentMinutes === KEY_MINUTE && currentSeconds < 1) {
+      console.log('')
       new Notification('Waifus Timer', {
         body: 'Your rolls are reseted right now!'
       })
@@ -33,56 +51,106 @@ function claimsResetInterval() {
     }
 
     if (resetClaim.includes(currentTime)) {
+      console.log('')
       new Notification('Waifus Timer', {
         body: 'Claim and rolls are reseted!'
       })
     }
-  }, 1000)
+  }, 1000 * 60)
 }
 
-if (JSON.parse(localStorage.getItem('@WaifusTimer:rolls'))) {
+function pokemonResetInterval() {
+  return setInterval(() => {
+    const currentHour = new Date().getHours()
+    const currentMinutes = new Date().getMinutes()
+
+    if (currentHour % 2 !== 0 && currentMinutes === 0) {
+      console.log('')
+      console.log("Gotta catch 'em all")
+      new Notification('Waifus Timer', {
+        body: "Gotta catch 'em all"
+      })
+    }
+  }, 1000 * 60)
+}
+
+if (rollsNotificator.isActive) {
   rollsSwitchEl.firstElementChild.classList.add('activated')
-  mudaeRollsResetTimer = rollsResetInterval()
+  rollsNotificator.timer = rollsResetInterval()
+  console.log('Claims timer activated!')
 }
 
-if (JSON.parse(localStorage.getItem('@WaifusTimer:claims'))) {
+if (claimsNotificator.isActive) {
   claimsSwitchEl.firstElementChild.classList.add('activated')
-  mudaeClaimResetTimer = claimsResetInterval()
+  claimsNotificator.timer = claimsResetInterval()
+  console.log('Claims timer activated!')
 }
 
 rollsSwitchEl.addEventListener('click', () => {
   rollsSwitchEl.firstElementChild.classList.toggle('activated')
 
-  if (!mudaeRollsResetTimer) {
-    mudaeRollsResetTimer = rollsResetInterval()
-
-    localStorage.setItem('@WaifusTimer:rolls', true)
-  } else {
-    clearInterval(mudaeRollsResetTimer)
+  if (rollsNotificator.isActive) {
+    clearInterval(rollsNotificator.timer)
 
     localStorage.setItem('@WaifusTimer:rolls', false)
+  } else {
+    rollsNotificator.timer = rollsResetInterval()
+    console.log('Rolls timer activated!')
+    notifyMe()
+    localStorage.setItem('@WaifusTimer:rolls', true)
   }
 })
 
 claimsSwitchEl.addEventListener('click', () => {
   claimsSwitchEl.firstElementChild.classList.toggle('activated')
 
-  if (!mudaeClaimResetTimer) {
-    mudaeClaimResetTimer = claimsResetInterval()
-
-    localStorage.setItem('@WaifusTimer:claims', true)
-  } else {
-    clearInterval(mudaeClaimResetTimer)
+  if (claimsNotificator.isActive) {
+    clearInterval(claimsNotificator.timer)
 
     localStorage.setItem('@WaifusTimer:claims', false)
+  } else {
+    claimsNotificator.timer = claimsResetInterval()
+    console.log('Claims timer activated!')
+    notifyMe()
+    localStorage.setItem('@WaifusTimer:claims', true)
   }
 })
 
-window.onload = () => {
-  Notification.requestPermission()
-}
+pokemonSwitchEl.addEventListener('click', () => {
+  pokemonSwitchEl.firstElementChild.classList.toggle('activated')
+
+  if (pokemonNotificator.isActive) {
+    clearInterval(pokemonNotificator.timer)
+
+    localStorage.setItem('@WaifusTimer:pokemon', false)
+  } else {
+    pokemonNotificator.isActive = true
+    pokemonNotificator.timer = pokemonResetInterval()
+    notifyMe()
+    localStorage.setItem('@WaifusTimer:pokemon', true)
+  }
+})
 
 window.onclose = () => {
   rollsSwitchEl.removeEventListener('click')
   claimsSwitchEl.removeEventListener('click')
+}
+
+function notifyMe() {
+  if (!('Notification' in window)) {
+    alert('This browser does not support desktop notification')
+    return
+  }
+
+  if (Notification.permission === 'granted') return
+
+  if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') return
+    })
+  }
+}
+
+window.onload = () => {
+  notifyMe()
 }
