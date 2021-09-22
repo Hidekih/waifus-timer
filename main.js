@@ -35,10 +35,12 @@ function rollsResetInterval() {
     const currentSeconds = new Date().getSeconds()
 
     if (currentMinutes === KEY_MINUTE && currentSeconds < 1) {
-      console.log('')
-      new Notification('Waifus Timer', {
-        body: 'Your rolls are reseted right now!'
-      })
+      console.log('Your rolls are reseted right now!')
+      if (new Date().getMinutes() === 39 && new Date().getSeconds() < 1) {
+        new Notification('Waifus Timer', {
+          body: 'Your rolls are reseted right now!'
+        })
+      }
     }
   }, 1000)
 }
@@ -51,7 +53,7 @@ function claimsResetInterval() {
     }
 
     if (resetClaim.includes(currentTime)) {
-      console.log('')
+      console.log('Claim and rolls are reseted!')
       new Notification('Waifus Timer', {
         body: 'Claim and rolls are reseted!'
       })
@@ -65,7 +67,6 @@ function pokemonResetInterval() {
     const currentMinutes = new Date().getMinutes()
 
     if (currentHour % 2 !== 0 && currentMinutes === 0) {
-      console.log('')
       console.log("Gotta catch 'em all")
       new Notification('Waifus Timer', {
         body: "Gotta catch 'em all"
@@ -134,23 +135,4 @@ pokemonSwitchEl.addEventListener('click', () => {
 window.onclose = () => {
   rollsSwitchEl.removeEventListener('click')
   claimsSwitchEl.removeEventListener('click')
-}
-
-function notifyMe() {
-  if (!('Notification' in window)) {
-    alert('This browser does not support desktop notification')
-    return
-  }
-
-  if (Notification.permission === 'granted') return
-
-  if (Notification.permission !== 'denied') {
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') return
-    })
-  }
-}
-
-window.onload = () => {
-  notifyMe()
 }
