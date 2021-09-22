@@ -1,4 +1,4 @@
-const KEY_MINUTE = 47
+const KEY_MINUTE = 39
 const resetClaim = [
   { hours: 0, minutes: 39 },
   { hours: 3, minutes: 39 },
