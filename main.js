@@ -13,6 +13,7 @@ const resetClaim = [
 const rollsSwitchEl = document.querySelector('#rolls-switch')
 const claimsSwitchEl = document.querySelector('#claims-switch')
 const pokemonSwitchEl = document.querySelector('#pokemon-switch')
+const loginButton = document.querySelector('#login')
 
 const rollsNotificator = {
   isActive: JSON.parse(localStorage.getItem('@WaifusTimer:rolls')),
@@ -132,7 +133,7 @@ pokemonSwitchEl.addEventListener('click', () => {
   }
 })
 
-function login() {
+loginButton.addEventListener('click', () => {
     fetch(`https://github.com/login/oauth/authorize?client_id=494166e906f5f900f24f`)
       .then(res => res.json())
       .then(response => console.log(response))
