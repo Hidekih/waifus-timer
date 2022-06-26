@@ -1,3 +1,5 @@
+console.log("v1.0.0")
+
 const KEY_MINUTE = 39
 const resetClaim = [
   { hours: 0, minutes: 39 },
