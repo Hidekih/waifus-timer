@@ -132,6 +132,12 @@ pokemonSwitchEl.addEventListener('click', () => {
   }
 })
 
+login() {
+    fetch(`https://github.com/login/oauth/authorize?client_id=494166e906f5f900f24f`)
+      .then(res => res.json())
+      .then(response => console.log(response))
+}
+
 window.onclose = () => {
   rollsSwitchEl.removeEventListener('click')
   claimsSwitchEl.removeEventListener('click')
